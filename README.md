@@ -1,3 +1,68 @@
+# Reproducing ZOO-Attack using Docker
+
+**by Muhammad Hilmi Asyrofi**
+
+#### Download ImageNet Dataset
+```
+cd ~/Documents/
+mkdir imagenet
+cd imagenet
+wget http://jaina.cs.ucdavis.edu/datasets/adv/imagenet/img.tar.gz
+tar -xzf img.tar.gz
+rm img.tar.gz
+```
+
+
+#### Prepare Docker
+pull required docker images to prepare Tensorflow 1.3.0 with Python3 on GPU
+```
+docker pull tensorflow/tensorflow:1.3.0-devel-gpu-py3
+```
+
+run docker container
+```
+docker run --name zooattack --rm --gpus '"device=1"' -it -v ~/Documents/ZOO-Attack/:/root/ZOO-Attack/ tensorflow/tensorflow:1.3.0-devel-gpu-py3
+```
+```
+cd /root/ZOO-Attack/
+```
+
+install Keras with specific version (because the Tensorflow 1.3.0 was last maintained 3 years ago, thus we need to install keras around 3 years ago version). I tried 2.1.2 and it works
+```
+pip3 install keras===2.1.2
+pip3 install h5py
+```
+install numba
+```
+apt-get update
+apt-get install llvm
+pip3 install llvmlite==0.31.0
+pip3 install numba===0.36.1
+```
+
+Read the paper description and run the instruction bellow
+
+#### Due to library depreceation, we need to change some implementation
+
+**1. `scipy.misc.imresize` depreciation**
+
+we need Pillow library
+```
+pip install Pillow
+```
+
+change `setup_inception.py` line 259
+```
+dat = np.array(scipy.misc.imresize(scipy.misc.imread(image),(299,299)), dtype = np.float32)
+```
+into
+```
+dat = np.array(Image.fromarray(scipy.misc.imread(image)).resize((299,299)), dtype = np.float32)
+```
+
+
+
+
 ZOO: Zeroth Order Optimization based Black-box Attacks to Deep Neural Networks 
 =====================================
 
