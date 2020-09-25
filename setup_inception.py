@@ -47,6 +47,7 @@ import sys
 import random
 import tarfile
 import scipy.misc
+from PIL import Image
 
 import numpy as np
 from six.moves import urllib
@@ -256,7 +257,8 @@ def main(_):
   # run_inference_on_image(image)
   create_graph()
   with tf.Session() as sess:
-    dat = np.array(scipy.misc.imresize(scipy.misc.imread(image),(299,299)), dtype = np.float32)
+#     dat = np.array(scipy.misc.imresize(scipy.misc.imread(image),(299,299)), dtype = np.float32)
+    dat = np.array(Image.fromarray(scipy.misc.imread(image)).resize((299,299)), dtype = np.float32)
     dat /= 255.0
     dat -= 0.5
     # print(dat)
